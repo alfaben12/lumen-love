@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,10 +16,26 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+$router->post('/signin', 'LoginController@signin');
+$router->post('/signup', 'LoginController@signup');
+
 $router->group(['prefix' => '/users'], function($router){
-    $router->get('/', 'UserController@showAllUsers');
-    $router->get('/{id}', 'UserController@showOneUser');
+    $router->get('/', 'UserController@showOne');
     $router->post('/', 'UserController@store');
-    $router->put('/{id}', 'UserController@update');
-    $router->delete('/{id}', 'UserController@destroy');
+    $router->put('/', 'UserController@update');
+    $router->delete('/', 'UserController@destroy');
+});
+
+$router->group(['prefix' => '/utterances'], function($router){
+    $router->get('/', 'UtteranceController@showAll');
+    $router->get('/{id}', 'UtteranceController@showOne');
+    $router->post('/', 'UtteranceController@store');
+    $router->put('/{id}', 'UtteranceController@update');
+    $router->delete('/{id}', 'UtteranceController@destroy');
+});
+
+$router->get('/login', function (Request $request) {
+    $token = app('auth')->attempt($request->only('email', 'password'));
+ 
+    return response()->json(compact('token'));
 });

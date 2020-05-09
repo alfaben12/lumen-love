@@ -14,7 +14,7 @@ class DummyClass extends Controller
      */
     public function __construct()
     {
-        //
+        $this->middleware('auth');
     }
 
     /**
@@ -22,9 +22,11 @@ class DummyClass extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showAllUsers(){
+    public function showAll(){
+        $userid = Auth::user()->id;
+        
         try {
-            $data = SomeModel::where('id',$id)->get();
+            $data = SomeModel::get();
             return response()->json($data, 200);
         } catch (\Throwable $th) {
             return response()->json('Data not found', 404);
@@ -38,7 +40,9 @@ class DummyClass extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showOneUser($id){
+    public function showOne($id){
+        $userid = Auth::user()->id;
+       
         try {
             $data = SomeModel::where('id',$id)->get();
             return response()->json($data, 200);
@@ -57,6 +61,8 @@ class DummyClass extends Controller
         $this->validate($request, [
             'email' => 'required'
         ]);
+
+        $userid = Auth::user()->id;
 
         try {
             $data = new SomeModel();
@@ -80,6 +86,8 @@ class DummyClass extends Controller
             'email' => 'required|email'
         ]);
 
+        $userid = Auth::user()->id;
+
         try {
             $data = SomeModel::findOrFail($id);
             $data->email = $request->input('email');
@@ -98,6 +106,8 @@ class DummyClass extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id){
+        $userid = Auth::user()->id;
+       
         try {
             $data = SomeModel::find($id);
             $data->delete();
